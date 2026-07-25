@@ -1,6 +1,8 @@
        IDENTIFICATION DIVISION.
            PROGRAM-ID. VALCNPJ.
-           AUTHOR. MARCOB.
+           AUTHOR. JOSUE CAMPELO 
+                   JANIO PARENTE 
+                   MARCOB.
 
        ENVIRONMENT DIVISION.
 
