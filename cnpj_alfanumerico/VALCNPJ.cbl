@@ -1,0 +1,157 @@
+       IDENTIFICATION DIVISION.
+           PROGRAM-ID. VALCNPJ.
+           AUTHOR. MARCOB.
+
+       ENVIRONMENT DIVISION.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-CNPJ.
+           05 WS-CNPJ-DIGITO PIC X(14).
+           05 WS-CNPJ-VALIDO PIC X VALUE 'N'.
+       01 WS-SOMATORIO PIC 9(5) VALUE 0.
+       01 WS-IND-PESO PIC 9(2).
+       01 WS-DV1 PIC 9.
+       01 WS-DV2 PIC 9.
+       01 TAB-VALORES.
+           03 TB-VALORES.
+             05 FILLER PIC X(01) VALUE 'A'.
+             05 FILLER PIC 9(3) VALUE 17.
+             05 FILLER PIC X(01) VALUE 'B'.
+             05 FILLER PIC 9(3) VALUE 18.
+             05 FILLER PIC X(01) VALUE 'C'.
+             05 FILLER PIC 9(3) VALUE 19.
+             05 FILLER PIC X(01) VALUE 'D'.
+             05 FILLER PIC 9(3) VALUE 20.
+             05 FILLER PIC X(01) VALUE 'E'.
+             05 FILLER PIC 9(3) VALUE 21.
+             05 FILLER PIC X(01) VALUE 'F'.
+             05 FILLER PIC 9(3) VALUE 22.
+             05 FILLER PIC X(01) VALUE 'G'.
+             05 FILLER PIC 9(3) VALUE 23.
+             05 FILLER PIC X(01) VALUE 'H'.
+             05 FILLER PIC 9(3) VALUE 24.
+             05 FILLER PIC X(01) VALUE 'I'.
+             05 FILLER PIC 9(3) VALUE 25.
+             05 FILLER PIC X(01) VALUE 'J'.
+             05 FILLER PIC 9(3) VALUE 26.
+             05 FILLER PIC X(01) VALUE 'K'.
+             05 FILLER PIC 9(3) VALUE 27.
+             05 FILLER PIC X(01) VALUE 'L'.
+             05 FILLER PIC 9(3) VALUE 28.
+             05 FILLER PIC X(01) VALUE 'M'.
+             05 FILLER PIC 9(3) VALUE 29.
+             05 FILLER PIC X(01) VALUE 'N'.
+             05 FILLER PIC 9(3) VALUE 30.
+             05 FILLER PIC X(01) VALUE 'O'.
+             05 FILLER PIC 9(3) VALUE 31.
+             05 FILLER PIC X(01) VALUE 'P'.
+             05 FILLER PIC 9(3) VALUE 32.
+             05 FILLER PIC X(01) VALUE 'Q'.
+             05 FILLER PIC 9(3) VALUE 33.
+             05 FILLER PIC X(01) VALUE 'R'.
+             05 FILLER PIC 9(3) VALUE 34.
+             05 FILLER PIC X(01) VALUE 'S'.
+             05 FILLER PIC 9(3) VALUE 35.
+             05 FILLER PIC X(01) VALUE 'T'.
+             05 FILLER PIC 9(3) VALUE 36.
+             05 FILLER PIC X(01) VALUE 'U'.
+             05 FILLER PIC 9(3) VALUE 37.
+             05 FILLER PIC X(01) VALUE 'V'.
+             05 FILLER PIC 9(3) VALUE 38.
+             05 FILLER PIC X(01) VALUE 'W'.
+             05 FILLER PIC 9(3) VALUE 39.
+             05 FILLER PIC X(01) VALUE 'X'.
+             05 FILLER PIC 9(3) VALUE 40.
+             05 FILLER PIC X(01) VALUE 'Y'.
+             05 FILLER PIC 9(3) VALUE 41.
+             05 FILLER PIC X(01) VALUE 'Z'.
+             05 FILLER PIC 9(3) VALUE 42.
+           03 TB-VALORES-RD REDEFINES TB-VALORES OCCURS 26 TIMES.
+             05 TB-LET PIC X(1).
+             05 TB-VAL PIC 9(3).
+       01 WS-MULTIPLICACAO.
+           05 WS-MULTIPLICACAO-RESULTADO PIC 9(5).
+       01 WS-CONSTANTES.
+           05 WS-CONSTANTE-PESO1 PIC X(12) VALUE '543298765432'.
+           05 WS-CONSTANTE-PESO2 PIC X(13) VALUE '6543298765432'.
+       01 WS-RESTO PIC 9(2).
+       01 WS-QUOCIENTE PIC 9(5).
+       01 WS-LETRA PIC X.
+       01 WS-LETRA-NUM PIC 9(5).
+       01 WS-EBCDIC PIC X VALUE 'N'.
+
+       PROCEDURE DIVISION.
+       PRINCIPAL.
+           DISPLAY 'INFORME O CNPJ A SER VALIDADO'.
+           ACCEPT WS-CNPJ-DIGITO.
+           PERFORM VALIDA-DIGITO-VERIFICADOR-1.
+           PERFORM VALIDA-DIGITO-VERIFICADOR-2.
+           IF WS-DV1 = FUNCTION NUMVAL(WS-CNPJ(13:1)) AND
+               WS-DV2 = FUNCTION NUMVAL(WS-CNPJ(14:1))
+               MOVE 'S' TO WS-CNPJ-VALIDO.
+           DISPLAY 'CNPJ: ' WS-CNPJ-DIGITO ' VALIDO? ' WS-CNPJ-VALIDO.
+             STOP RUN.     
+
+       VALIDA-DIGITO-VERIFICADOR-1.
+           MOVE 0 TO WS-SOMATORIO.
+           PERFORM VARYING WS-IND-PESO FROM 1 BY 1 
+               UNTIL WS-IND-PESO > 12
+               PERFORM VERIFICA-NUMERO
+      *        DISPLAY WS-LETRA-NUM
+               COMPUTE WS-MULTIPLICACAO-RESULTADO = 
+                   WS-LETRA-NUM *
+                   FUNCTION NUMVAL(WS-CONSTANTE-PESO1(WS-IND-PESO:1))
+                   ADD WS-MULTIPLICACAO-RESULTADO TO WS-SOMATORIO
+           END-PERFORM.
+           DIVIDE WS-SOMATORIO BY 11 GIVING WS-QUOCIENTE REMAINDER 
+               WS-RESTO.
+           IF WS-RESTO = 0 OR WS-RESTO = 1
+               MOVE 0 TO WS-DV1
+           ELSE
+               COMPUTE WS-DV1 = 11 - WS-RESTO.
+           DISPLAY 'DIGITO VERIFICADOR 1: ' WS-DV1.
+
+       VALIDA-DIGITO-VERIFICADOR-2.
+           MOVE 0 TO WS-SOMATORIO.
+           PERFORM VARYING WS-IND-PESO FROM 1 BY 1 
+               UNTIL WS-IND-PESO > 13
+               PERFORM VERIFICA-NUMERO
+      *        DISPLAY WS-LETRA-NUM
+               COMPUTE WS-MULTIPLICACAO-RESULTADO = 
+                   WS-LETRA-NUM *
+                   FUNCTION NUMVAL(WS-CONSTANTE-PESO2(WS-IND-PESO:1))
+                   ADD WS-MULTIPLICACAO-RESULTADO TO WS-SOMATORIO
+           END-PERFORM.
+           DIVIDE WS-SOMATORIO BY 11 GIVING WS-QUOCIENTE REMAINDER 
+               WS-RESTO.
+           IF WS-RESTO = 0 OR WS-RESTO = 1
+               MOVE 0 TO WS-DV2
+           ELSE
+               COMPUTE WS-DV2 = 11 - WS-RESTO.
+           DISPLAY 'DIGITO VERIFICADOR 2: ' WS-DV2.
+   
+        VERIFICA-NUMERO.
+           IF WS-CNPJ(WS-IND-PESO:1) IS NUMERIC 
+               MOVE WS-CNPJ(WS-IND-PESO:1) TO WS-LETRA-NUM
+           ELSE
+               MOVE FUNCTION UPPER-CASE(WS-CNPJ(WS-IND-PESO:1)) 
+                   TO WS-LETRA
+               PERFORM VERIFICA-LETRA.   
+
+       VERIFICA-LETRA.
+           COMPUTE WS-LETRA-NUM = FUNCTION ORD(WS-LETRA) - 1.
+           IF WS-EBCDIC = 'S'
+             IF WS-LETRA-NUM IS GREATER THAN 192 AND
+               LESS THAN 202
+               COMPUTE WS-LETRA-NUM = WS-LETRA-NUM - 176
+             IF WS-LETRA-NUM IS GREATER THAN 208 AND
+               LESS THAN 218
+               COMPUTE WS-LETRA-NUM = WS-LETRA-NUM - 183
+             IF WS-LETRA-NUM IS GREATER THAN 225 AND
+               LESS THAN 234
+               COMPUTE WS-LETRA-NUM = WS-LETRA-NUM - 191.
+           IF WS-EBCDIC = 'N'
+               IF WS-LETRA-NUM IS GREATER THAN 64 AND
+                   LESS THAN 92
+                   COMPUTE WS-LETRA-NUM = WS-LETRA-NUM - 48.
