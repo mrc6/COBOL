@@ -1,0 +1,5 @@
+//COBOL   JOB 1,NOTIFY=&SYSUID
+//***************************************************/
+//COBRUN  EXEC IGYWCL
+//COBOL.SYSIN  DD DSN=&SYSUID..CBL(STCTRL),DISP=SHR
+//LKED.SYSLMOD DD DSN=&SYSUID..LOAD(STCTRL),DISP=SHR

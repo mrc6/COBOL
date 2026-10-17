@@ -1,0 +1,7 @@
+//CBL0005J JOB 1,NOTIFY=&SYSUID
+//***************************************************/
+//STEP1    EXEC PGM=IDCAMS
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  PRINT INDATASET(Z87588.VSAM.STCTRL.KSDS) CHARACTER
+/*
